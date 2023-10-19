@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/features/display/ui/display.dart';
+import 'package:wallpaper_app/utils/routes/routes_name.dart';
+
+import '../../features/home/ui/home_page.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case RoutesName.home:
+        return MaterialPageRoute(builder: (context) {
+          return const HomePage();
+        });
+      case RoutesName.display:
+        return MaterialPageRoute(builder: (context) {
+          String url = settings.arguments as String;
+          return Display(
+            imageUrl: url,
+          );
+        });
       default:
         return MaterialPageRoute(
           builder: (context) {

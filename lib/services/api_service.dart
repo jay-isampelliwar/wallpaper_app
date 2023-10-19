@@ -1,10 +1,13 @@
-import 'dart:developer';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:wallpaper_app/features/home/model/pexels_data_model.dart';
+import 'package:wallpaper_app/services/api.dart';
 
 class ApiService {
   Dio? dio;
-
+  final int _perPage = 30;
+  int _pageNumber = 1;
   ApiService() {
     dio = Dio();
 
@@ -19,19 +22,44 @@ class ApiService {
       };
   }
 
-  Future<void> check(int pageNumber) async {
+  Future<(PixelsModel, bool)> fetchCurated() async {
     try {
-      final response = await dio!.get("curated?page=1&per_page=10",
-          options: Options(headers: {
-            "Authorization":
-                "1EYoMYDTgro4ri2dmtlginRU6cjNnwxAhA1HND7DCQ9918EgF8q0Vzoo"
-          }));
+      final response = await dio!.get(
+        Api.endpoint[Endpoint.Curated]!,
+        options: Options(
+          headers: {"Authorization": Api.endpoint[Endpoint.API_KEY]},
+        ),
+      );
 
       if (response.statusCode == 200) {
-        log(response.toString());
+        return (PixelsModel.fromJson(json.decode(response.toString())), true);
+      } else {
+        return (PixelsModel.fromJson(json.decode(response.toString())), false);
       }
     } catch (error) {
       print("Network error: $error");
+      rethrow;
+    }
+  }
+
+  Future<(PixelsModel, bool)> fetchMoreCurated() async {
+    _pageNumber = _pageNumber + 1;
+    try {
+      final response = await dio!.get(
+        "curated?page=$_pageNumber&per_page=$_perPage",
+        options: Options(
+          headers: {"Authorization": Api.endpoint[Endpoint.API_KEY]},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return (PixelsModel.fromJson(json.decode(response.toString())), true);
+      } else {
+        return (PixelsModel.fromJson(json.decode(response.toString())), false);
+      }
+    } catch (error) {
+      print("Network error: $error");
+      rethrow;
     }
   }
 }
