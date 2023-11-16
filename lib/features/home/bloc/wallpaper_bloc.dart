@@ -15,21 +15,22 @@ class WallpaperBloc extends Bloc<WallpaperEvent, WallpaperState> {
     on<WallpaperFetchMoreEvent>(wallpaperFetchMoreEvent);
     on<WallpaperClickEvent>(wallpaperClickEvent);
   }
-
+//
   FutureOr<void> wallpaperInitialFetchEvent(
       WallpaperInitialFetchEvent event, Emitter<WallpaperState> emit) async {
     emit(WallpaperLoadingState());
     var (model, status) = await apiService.fetchCurated();
     if (status) {
-      emit(WallpaperSuccessState(data: model));
+      emit(WallpaperSuccessState(data: model!));
     } else {
       emit(WallpaperErrorState(
           message: "Something went wrong, while fetching data"));
     }
   }
 
-  FutureOr<void> wallpaperFetchMoreEvent(
+  FutureOr<bool> wallpaperFetchMoreEvent(
       WallpaperFetchMoreEvent event, Emitter<WallpaperState> emit) async {
+    emit(WallpaperBottomLoadingState());
     var (model, status) = await apiService.fetchMoreCurated();
     if (status) {
       emit(WallpaperSuccessState(data: model));
@@ -37,6 +38,8 @@ class WallpaperBloc extends Bloc<WallpaperEvent, WallpaperState> {
       emit(WallpaperErrorState(
           message: "Something went wrong, while fetching data"));
     }
+
+    return status;
   }
 
   FutureOr<void> wallpaperClickEvent(

@@ -1,7 +1,7 @@
 enum Endpoint { Curated, API_KEY }
 
 class Api {
-  static int perPage = 10;
+  static int perPage = 30;
   static int pageNumber = 1;
   static Map<Endpoint, String> endpoint = {
     Endpoint.Curated: "curated?page=$pageNumber&per_page=$perPage",

@@ -13,10 +13,10 @@ class Routes {
         });
       case RoutesName.display:
         return MaterialPageRoute(builder: (context) {
-          String url = settings.arguments as String;
-          return Display(
-            imageUrl: url,
-          );
+          Map<String, String> map = settings.arguments as Map<String, String>;
+          String? url = map["url"];
+          String? tag = map["tag"];
+          return Display(imageUrl: url!, tag: tag!);
         });
       default:
         return MaterialPageRoute(

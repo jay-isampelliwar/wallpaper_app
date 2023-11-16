@@ -22,7 +22,7 @@ class ApiService {
       };
   }
 
-  Future<(PixelsModel, bool)> fetchCurated() async {
+  Future<(PixelsModel?, bool)> fetchCurated() async {
     try {
       final response = await dio!.get(
         Api.endpoint[Endpoint.Curated]!,
@@ -34,7 +34,7 @@ class ApiService {
       if (response.statusCode == 200) {
         return (PixelsModel.fromJson(json.decode(response.toString())), true);
       } else {
-        return (PixelsModel.fromJson(json.decode(response.toString())), false);
+        return (null, false);
       }
     } catch (error) {
       print("Network error: $error");
