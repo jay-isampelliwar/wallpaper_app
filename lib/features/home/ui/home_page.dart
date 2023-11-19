@@ -6,7 +6,9 @@ import 'package:wallpaper_app/features/home/model/pexels_data_model.dart';
 import '../../../utils/routes/routes_name.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, required this.wallpaperBloc}) : super(key: key);
+
+  final WallpaperBloc wallpaperBloc;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -14,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  WallpaperBloc wallpaperBloc = WallpaperBloc();
+
   ScrollController scrollController = ScrollController();
   late AnimationController animationController;
   late Animation<double> alignmentController;
@@ -29,7 +31,7 @@ class _HomePageState extends State<HomePage>
         CurvedAnimation(parent: animationController, curve: Curves.bounceIn));
 
     Future.delayed(Duration.zero, () {
-      wallpaperBloc.add(WallpaperInitialFetchEvent());
+      widget.wallpaperBloc.add(WallpaperInitialFetchEvent());
     });
 
     scrollController.addListener(() async {
@@ -38,7 +40,7 @@ class _HomePageState extends State<HomePage>
           // }
         } else if (scrollController.position.extentAfter == 0) {
           animationController.forward();
-          wallpaperBloc.add(WallpaperFetchMoreEvent());
+          widget.wallpaperBloc.add(WallpaperFetchMoreEvent());
           // if (status) {
           await animationController.reverse();
         }
@@ -51,9 +53,9 @@ class _HomePageState extends State<HomePage>
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey.shade900,
-        body: BlocConsumer(
-          bloc: wallpaperBloc,
+        body: BlocBuilder<WallpaperBloc, WallpaperState>(
           builder: (context, state) {
+      
             if (state is WallpaperLoadingState) {
               return const Center(
                 child: CircularProgressIndicator(),
@@ -130,8 +132,7 @@ class _HomePageState extends State<HomePage>
               );
             }
             return const SizedBox();
-          },
-          listener: (context, state) {},
+          }
         ),
       ),
     );

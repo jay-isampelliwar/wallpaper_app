@@ -22,6 +22,7 @@ class WallpaperBloc extends Bloc<WallpaperEvent, WallpaperState> {
     var (model, status) = await apiService.fetchCurated();
     if (status) {
       emit(WallpaperSuccessState(data: model!));
+    
     } else {
       emit(WallpaperErrorState(
           message: "Something went wrong, while fetching data"));

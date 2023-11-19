@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:wallpaper_app/features/home/bloc/wallpaper_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wallpaper_app/features/display/ui/display.dart';
 import 'package:wallpaper_app/utils/routes/routes_name.dart';
 
@@ -9,7 +11,12 @@ class Routes {
     switch (settings.name) {
       case RoutesName.home:
         return MaterialPageRoute(builder: (context) {
-          return const HomePage();
+          final WallpaperBloc wallpaperBloc = WallpaperBloc();
+          return BlocProvider.value(
+            value: wallpaperBloc,
+            child: HomePage(wallpaperBloc: wallpaperBloc,),
+            //child: HomePage(wallpaperBloc: BlocProvider.of<WallpaperBloc>(context),), // can also provide bloc in this way
+            );
         });
       case RoutesName.display:
         return MaterialPageRoute(builder: (context) {
